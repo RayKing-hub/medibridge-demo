@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MediBridge</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --surface: rgba(255,255,255,0.82);
+      --card: #ffffff;
+      --text: #10233f;
+      --muted: #5f6f86;
+      --line: rgba(16,35,63,0.10);
+      --primary: #143d7a;
+      --accent: #2ea6a0;
+      --shadow: 0 20px 60px rgba(12, 32, 66, 0.08);
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --max: 1180px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(46,166,160,0.10), transparent 28%),
+        radial-gradient(circle at top right, rgba(20,61,122,0.08), transparent 30%),
+        var(--bg);
+      color: var(--text);
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(18px);
+      background: rgba(246, 248, 251, 0.78);
+      border-bottom: 1px solid rgba(16,35,63,0.06);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 0;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: 0.01em; }
+    .brand-mark {
+      width: 36px; height: 36px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      box-shadow: 0 10px 24px rgba(20,61,122,0.18);
+    }
+    .nav-links { display: flex; align-items: center; gap: 22px; color: var(--muted); font-size: 14px; }
+    .lang-toggle {
+      display: inline-flex; padding: 4px; border: 1px solid var(--line);
+      border-radius: 999px; background: rgba(255,255,255,0.7);
+    }
+    .lang-toggle button {
+      border: 0; background: transparent; color: var(--muted); padding: 8px 12px;
+      border-radius: 999px; font: inherit; cursor: pointer;
+    }
+    .lang-toggle button.active { background: var(--text); color: white; }
+    .hero { padding: 56px 0 28px; }
+    .hero-panel {
+      display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 32px;
+      padding: 44px; background: var(--surface); border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 32px; box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px;
+      background: rgba(20,61,122,0.07); color: var(--primary); border-radius: 999px;
+      font-size: 13px; font-weight: 600;
+    }
+    h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 0.98; letter-spacing: -0.04em; margin: 18px 0 18px;
+      max-width: 11ch;
+    }
+    .lead { font-size: 18px; line-height: 1.75; color: var(--muted); max-width: 62ch; }
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 14px 18px; border-radius: 14px; font-weight: 600; font-size: 15px;
+      border: 1px solid transparent; cursor: pointer;
+    }
+    .btn-primary { background: var(--text); color: white; }
+    .btn-secondary { background: white; border-color: var(--line); color: var(--text); }
+    .hero-card {
+      background: linear-gradient(180deg, rgba(20,61,122,0.98), rgba(16,35,63,0.98));
+      color: white; border-radius: 28px; padding: 28px; display: flex; flex-direction: column; gap: 18px;
+      min-height: 100%;
+    }
+    .hero-card h3 { margin: 0; font-size: 20px; letter-spacing: -0.02em; }
+    .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mini-card {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px;
+      padding: 14px;
+    }
+    .mini-card strong { display: block; font-size: 15px; margin-bottom: 6px; }
+    .mini-card span { color: rgba(255,255,255,0.76); font-size: 13px; line-height: 1.6; }
+    .trust-strip {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 24px;
+    }
+    .trust-item {
+      background: white; border: 1px solid var(--line); border-radius: 18px; padding: 18px;
+      color: var(--muted); box-shadow: 0 12px 30px rgba(12,32,66,0.04);
+    }
+    .section { padding: 32px 0 12px; }
+    .section-header { margin-bottom: 22px; }
+    .section-header h2 {
+      font-size: clamp(28px, 4vw, 44px); letter-spacing: -0.03em; margin: 0 0 10px;
+    }
+    .section-header p { margin: 0; color: var(--muted); font-size: 17px; line-height: 1.75; max-width: 70ch; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .card {
+      background: white; border: 1px solid var(--line); border-radius: 22px; padding: 24px;
+      box-shadow: 0 16px 40px rgba(12,32,66,0.05);
+    }
+    .card h3, .card h4 { margin-top: 0; letter-spacing: -0.02em; }
+    .card p, .card li { color: var(--muted); line-height: 1.75; }
+    .number {
+      width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 999px; background: rgba(20,61,122,0.08); color: var(--primary); font-weight: 700; margin-bottom: 14px;
+    }
+    .specialty { padding: 20px; }
+    .specialty strong { display: block; font-size: 16px; margin-bottom: 8px; }
+    .hospital-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .pill { padding: 8px 10px; border-radius: 999px; background: rgba(46,166,160,0.10); color: #0f6e69; font-size: 12px; font-weight: 700; }
+    .muted { color: var(--muted); }
+    .steps .card { position: relative; overflow: hidden; }
+    .steps .card::after {
+      content: ""; position: absolute; inset: auto -20% -35% auto; width: 140px; height: 140px;
+      border-radius: 50%; background: rgba(46,166,160,0.06);
+    }
+    .faq-item { padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .faq-item:last-child { border-bottom: 0; }
+    .cta {
+      padding: 28px; border-radius: 28px; background: linear-gradient(135deg, #12356a, #153f7e 58%, #1f827f);
+      color: white; box-shadow: var(--shadow);
+    }
+    .cta p { color: rgba(255,255,255,0.82); max-width: 60ch; }
+    footer { padding: 26px 0 48px; color: var(--muted); font-size: 14px; }
+    @media (max-width: 980px) {
+      .hero-panel, .grid-2, .grid-3, .grid-4, .trust-strip { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      h1 { max-width: 14ch; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+        <div class="brand-mark"></div>
+        <span>MediBridge</span>
+      </div>
+      <div class="nav-links">
+        <a href="#services" data-i18n="nav.services">Services</a>
+        <a href="specialties.html" data-i18n="nav.specialties">Specialties</a>
+        <a href="hospitals.html" data-i18n="nav.hospitals">Hospitals</a>
+        <a href="#process" data-i18n="nav.process">How it works</a>
+        <div class="lang-toggle">
+          <button class="active" data-lang="en">EN</button>
+          <button data-lang="zh">中文</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-panel">
+          <div>
+            <div class="eyebrow" data-i18n="hero.eyebrow">Cross border care guidance for patients and families</div>
+            <h1 data-i18n="hero.title">Access trusted medical care in China</h1>
+            <p class="lead" data-i18n="hero.lead">MediBridge helps overseas patients and families find the right hospitals, specialties, and care pathways in China, with clear guidance and coordinated support from first inquiry to follow-up.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="hospitals.html" data-i18n="hero.ctaPrimary">Explore Hospitals</a>
+              <a class="btn btn-secondary" href="#cta" data-i18n="hero.ctaSecondary">Start a Consultation</a>
+            </div>
+          </div>
+          <aside class="hero-card">
+            <h3 data-i18n="heroCard.title">A clearer way to evaluate care options</h3>
+            <p class="muted" style="color: rgba(255,255,255,0.78); margin:0; line-height:1.7;" data-i18n="heroCard.body">Designed for international patients who need reliable information, specialty focused hospital discovery, and practical support before treatment decisions are made.</p>
+            <div class="mini-grid">
+              <div class="mini-card">
+                <strong data-i18n="heroCard.aTitle">Hospitals</strong>
+                <span data-i18n="heroCard.aBody">Curated hospitals by city and specialty</span>
+              </div>
+              <div class="mini-card">
+                <strong data-i18n="heroCard.bTitle">Specialties</strong>
+                <span data-i18n="heroCard.bBody">Clear entry points for major care needs</span>
+              </div>
+              <div class="mini-card">
+                <strong data-i18n="heroCard.cTitle">Matching</strong>
+                <span data-i18n="heroCard.cBody">Guidance based on treatment priorities</span>
+              </div>
+              <div class="mini-card">
+                <strong data-i18n="heroCard.dTitle">Support</strong>
+                <span data-i18n="heroCard.dBody">Records, scheduling, interpretation, travel</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="trust-strip">
+          <div class="trust-item" data-i18n="trust.1">Transparent guidance</div>
+          <div class="trust-item" data-i18n="trust.2">Curated hospital network</div>
+          <div class="trust-item" data-i18n="trust.3">Specialty based matching</div>
+          <div class="trust-item" data-i18n="trust.4">Bilingual support</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="container">
+        <div class="section-header">
+          <h2 data-i18n="services.title">A clearer path to treatment in China</h2>
+          <p data-i18n="services.lead">Cross border medical decisions are difficult when information is fragmented and options are hard to compare. MediBridge brings trusted information and practical coordination together in one place.</p>
+        </div>
+        <div class="grid-2">
+          <article class="card">
+            <h3 data-i18n="services.aTitle">Hospital discovery</h3>
+            <p data-i18n="services.aBody">Browse leading hospitals in China by city, specialty, and treatment focus, with profiles built for patients and families rather than industry insiders.</p>
+          </article>
+          <article class="card">
+            <h3 data-i18n="services.bTitle">Specialty guidance</h3>
+            <p data-i18n="services.bBody">Understand which institutions are known for oncology, cardiovascular disease, neurology, orthopedics, fertility, and more.</p>
+          </article>
+          <article class="card">
+            <h3 data-i18n="services.cTitle">Care matching</h3>
+            <p data-i18n="services.cBody">Get help identifying suitable hospitals, departments, and doctors based on medical needs, timing, and budget priorities.</p>
+          </article>
+          <article class="card">
+            <h3 data-i18n="services.dTitle">Coordination support</h3>
+            <p data-i18n="services.dBody">Receive assistance with medical records, appointments, bilingual communication, interpretation, and travel logistics.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 data-i18n="why.title">Why patients consider treatment in China</h2>
+          <p data-i18n="why.lead">Patients exploring care in China often care about quality, speed, and value at the same time. The website should make those tradeoffs easier to understand.</p>
+        </div>
+        <div class="grid-4">
+          <article class="card"><h4 data-i18n="why.aTitle">Strong specialist care</h4><p data-i18n="why.aBody">Access leading tertiary hospitals and experienced physicians across major specialties.</p></article>
+          <article class="card"><h4 data-i18n="why.bTitle">Potentially shorter waits</h4><p data-i18n="why.bBody">Some treatment pathways may be available faster than common overseas routes.</p></article>
+          <article class="card"><h4 data-i18n="why.cTitle">High value</h4><p data-i18n="why.cBody">For many patients, overall cost to outcome value can be more attractive than private options abroad.</p></article>
+          <article class="card"><h4 data-i18n="why.dTitle">Broader choice</h4><p data-i18n="why.dBody">Compare hospitals, cities, and specialties rather than relying on a single institution.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="specialties">
+      <div class="container">
+        <div class="section-header">
+          <h2 data-i18n="specialties.title">Explore by specialty</h2>
+          <p data-i18n="specialties.lead">Patients usually start with a condition, not a hospital. These entry points keep the browsing path intuitive and direct.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card specialty"><strong data-i18n="specialties.aTitle">Oncology</strong><p data-i18n="specialties.aBody">Cancer treatment, surgery, tumor boards, second opinions.</p></article>
+          <article class="card specialty"><strong data-i18n="specialties.bTitle">Cardiology</strong><p data-i18n="specialties.bBody">Cardiovascular diagnostics, intervention, surgery, rehabilitation.</p></article>
+          <article class="card specialty"><strong data-i18n="specialties.cTitle">Neurology</strong><p data-i18n="specialties.cBody">Stroke care, epilepsy, movement disorders, neuro diagnostics.</p></article>
+          <article class="card specialty"><strong data-i18n="specialties.dTitle">Orthopedics</strong><p data-i18n="specialties.dBody">Joint surgery, spine care, sports injury, rehabilitation.</p></article>
+          <article class="card specialty"><strong data-i18n="specialties.eTitle">Fertility</strong><p data-i18n="specialties.eBody">Reproductive medicine, IVF pathways, specialist consultation.</p></article>
+          <article class="card specialty"><strong data-i18n="specialties.fTitle">Health screening</strong><p data-i18n="specialties.fBody">Executive checkups, preventive care, structured follow-up planning.</p></article>
+        </div>
+        <div class="actions" style="margin-top:22px;">
+          <a class="btn btn-secondary" href="specialties.html" data-i18n="specialties.cta">View specialty directory</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="hospitals">
+      <div class="container">
+        <div class="section-header">
+          <h2 data-i18n="hospitals.title">Featured hospitals</h2>
+          <p data-i18n="hospitals.lead">This demo uses sample cards to show how the first version can present a focused, trustworthy hospital directory.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card">
+            <div class="hospital-head">
+              <div>
+                <h3 data-i18n="hospitals.aTitle">Peking Union Medical College Hospital</h3>
+                <p class="muted" data-i18n="hospitals.aMeta">Beijing • Tertiary hospital</p>
+              </div>
+              <span class="pill" data-i18n="hospitals.tag">Featured</span>
+            </div>
+            <p data-i18n="hospitals.aBody">Known for comprehensive care, strong specialist departments, and complex case management.</p>
+          </article>
+          <article class="card">
+            <div class="hospital-head">
+              <div>
+                <h3 data-i18n="hospitals.bTitle">Fudan University Zhongshan Hospital</h3>
+                <p class="muted" data-i18n="hospitals.bMeta">Shanghai • Tertiary hospital</p>
+              </div>
+              <span class="pill" data-i18n="hospitals.tag">Featured</span>
+            </div>
+            <p data-i18n="hospitals.bBody">Strong in cardiovascular medicine, surgery, and integrated specialty care.</p>
+          </article>
+          <article class="card">
+            <div class="hospital-head">
+              <div>
+                <h3 data-i18n="hospitals.cTitle">West China Hospital</h3>
+                <p class="muted" data-i18n="hospitals.cMeta">Chengdu • Tertiary hospital</p>
+              </div>
+              <span class="pill" data-i18n="hospitals.tag">Featured</span>
+            </div>
+            <p data-i18n="hospitals.cBody">Well known for broad clinical capacity, complex referrals, and multidisciplinary treatment resources.</p>
+          </article>
+        </div>
+        <div class="actions" style="margin-top:22px;">
+          <a class="btn btn-secondary" href="hospitals.html" data-i18n="hospitals.cta">View hospital directory</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="why-medibridge">
+      <div class="container">
+        <div class="section-header">
+          <h2 data-i18n="advantage.title">Why MediBridge</h2>
+          <p data-i18n="advantage.lead">The website should make it clear that MediBridge is not just listing hospitals, but helping patients make more confident decisions across a fragmented cross border journey.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card"><h3 data-i18n="advantage.aTitle">Independent navigation</h3><p data-i18n="advantage.aBody">Help users compare multiple hospitals and departments instead of pushing one institution.</p></article>
+          <article class="card"><h3 data-i18n="advantage.bTitle">Bilingual clarity</h3><p data-i18n="advantage.bBody">Explain hospitals, specialties, and care pathways in a way that international patients and families can actually understand.</p></article>
+          <article class="card"><h3 data-i18n="advantage.cTitle">Practical coordination</h3><p data-i18n="advantage.cBody">Move from information to action with support around records, scheduling, travel, and communication.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section steps" id="process">
+      <div class="container">
+        <div class="section-header">
+          <h2 data-i18n="process.title">How MediBridge works</h2>
+          <p data-i18n="process.lead">The experience should reduce uncertainty step by step, from the first inquiry to treatment follow-up.</p>
+        </div>
+        <div class="grid-3">
+          <article class="card"><div class="number">1</div><h3 data-i18n="process.aTitle">Share your needs</h3><p data-i18n="process.aBody">Tell us about your condition, treatment goals, urgency, and location preferences.</p></article>
+          <article class="card"><div class="number">2</div><h3 data-i18n="process.bTitle">Review options</h3><p data-i18n="process.bBody">We identify suitable hospitals and departments based on your case and priorities.</p></article>
+          <article class="card"><div class="number">3</div><h3 data-i18n="process.cTitle">Confirm a plan</h3><p data-i18n="process.cBody">Understand likely pathways, records needed, timing expectations, and budget range.</p></article>
+          <article class="card"><div class="number">4</div><h3 data-i18n="process.dTitle">Prepare for treatment</h3><p data-i18n="process.dBody">Coordinate records, appointments, travel planning, and bilingual communication support.</p></article>
+          <article class="card"><div class="number">5</div><h3 data-i18n="process.eTitle">Receive follow-up support</h3><p data-i18n="process.eBody">Stay supported through treatment and post visit coordination where needed.</p></article>
+          <article class="card"><div class="number">6</div><h3 data-i18n="process.fTitle">Build long term trust</h3><p data-i18n="process.fBody">The platform grows stronger as content, hospital coverage, and real patient guidance expand.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 data-i18n="faq.title">Frequently asked questions</h2>
+        </div>
+        <div class="card">
+          <div class="faq-item"><h3 data-i18n="faq.aQ">Can MediBridge help before I travel to China</h3><p data-i18n="faq.aA">Yes. Patients can start by understanding options, reviewing available information, and preparing the next steps before travel.</p></div>
+          <div class="faq-item"><h3 data-i18n="faq.bQ">Do you work with one hospital only</h3><p data-i18n="faq.bA">No. A core value of MediBridge is helping patients compare options across multiple institutions.</p></div>
+          <div class="faq-item"><h3 data-i18n="faq.cQ">Can you help with records and translation</h3><p data-i18n="faq.cA">Yes. The service can include medical record organization, bilingual communication, and interpretation support.</p></div>
+          <div class="faq-item"><h3 data-i18n="faq.dQ">Is this only for Chinese speaking patients</h3><p data-i18n="faq.dA">No. The platform is intended for international patients and families, with bilingual presentation and support.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="cta">
+      <div class="container">
+        <div class="cta">
+          <h2 data-i18n="cta.title">Need help finding the right hospital in China</h2>
+          <p data-i18n="cta.lead">Start with hospitals and specialties, or contact MediBridge for tailored guidance based on your care needs.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="#" data-i18n="cta.primary">Start a Consultation</a>
+            <a class="btn btn-secondary" href="#hospitals" data-i18n="cta.secondary">Browse Hospitals</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div>MediBridge</div>
+      <div data-i18n="footer.note">Minimal bilingual homepage demo for concept validation.</div>
+    </div>
+  </footer>
+
+  <script>
+    const copy = {
+      en: {
+        'nav.services': 'Services',
+        'nav.specialties': 'Specialties',
+        'nav.hospitals': 'Hospitals',
+        'nav.process': 'How it works',
+        'hero.eyebrow': 'Cross border care guidance for patients and families',
+        'hero.title': 'Access trusted medical care in China',
+        'hero.lead': 'MediBridge helps overseas patients and families find the right hospitals, specialties, and care pathways in China, with clear guidance and coordinated support from first inquiry to follow-up.',
+        'hero.ctaPrimary': 'Explore Hospitals',
+        'hero.ctaSecondary': 'Start a Consultation',
+        'heroCard.title': 'A clearer way to evaluate care options',
+        'heroCard.body': 'Designed for international patients who need reliable information, specialty focused hospital discovery, and practical support before treatment decisions are made.',
+        'heroCard.aTitle': 'Hospitals',
+        'heroCard.aBody': 'Curated hospitals by city and specialty',
+        'heroCard.bTitle': 'Specialties',
+        'heroCard.bBody': 'Clear entry points for major care needs',
+        'heroCard.cTitle': 'Matching',
+        'heroCard.cBody': 'Guidance based on treatment priorities',
+        'heroCard.dTitle': 'Support',
+        'heroCard.dBody': 'Records, scheduling, interpretation, travel',
+        'trust.1': 'Transparent guidance',
+        'trust.2': 'Curated hospital network',
+        'trust.3': 'Specialty based matching',
+        'trust.4': 'Bilingual support',
+        'services.title': 'A clearer path to treatment in China',
+        'services.lead': 'Cross border medical decisions are difficult when information is fragmented and options are hard to compare. MediBridge brings trusted information and practical coordination together in one place.',
+        'services.aTitle': 'Hospital discovery',
+        'services.aBody': 'Browse leading hospitals in China by city, specialty, and treatment focus, with profiles built for patients and families rather than industry insiders.',
+        'services.bTitle': 'Specialty guidance',
+        'services.bBody': 'Understand which institutions are known for oncology, cardiovascular disease, neurology, orthopedics, fertility, and more.',
+        'services.cTitle': 'Care matching',
+        'services.cBody': 'Get help identifying suitable hospitals, departments, and doctors based on medical needs, timing, and budget priorities.',
+        'services.dTitle': 'Coordination support',
+        'services.dBody': 'Receive assistance with medical records, appointments, bilingual communication, interpretation, and travel logistics.',
+        'why.title': 'Why patients consider treatment in China',
+        'why.lead': 'Patients exploring care in China often care about quality, speed, and value at the same time. The website should make those tradeoffs easier to understand.',
+        'why.aTitle': 'Strong specialist care',
+        'why.aBody': 'Access leading tertiary hospitals and experienced physicians across major specialties.',
+        'why.bTitle': 'Potentially shorter waits',
+        'why.bBody': 'Some treatment pathways may be available faster than common overseas routes.',
+        'why.cTitle': 'High value',
+        'why.cBody': 'For many patients, overall cost to outcome value can be more attractive than private options abroad.',
+        'why.dTitle': 'Broader choice',
+        'why.dBody': 'Compare hospitals, cities, and specialties rather than relying on a single institution.',
+        'specialties.title': 'Explore by specialty',
+        'specialties.lead': 'Patients usually start with a condition, not a hospital. These entry points keep the browsing path intuitive and direct.',
+        'specialties.aTitle': 'Oncology',
+        'specialties.aBody': 'Cancer treatment, surgery, tumor boards, second opinions.',
+        'specialties.bTitle': 'Cardiology',
+        'specialties.bBody': 'Cardiovascular diagnostics, intervention, surgery, rehabilitation.',
+        'specialties.cTitle': 'Neurology',
+        'specialties.cBody': 'Stroke care, epilepsy, movement disorders, neuro diagnostics.',
+        'specialties.dTitle': 'Orthopedics',
+        'specialties.dBody': 'Joint surgery, spine care, sports injury, rehabilitation.',
+        'specialties.eTitle': 'Fertility',
+        'specialties.eBody': 'Reproductive medicine, IVF pathways, specialist consultation.',
+        'specialties.fTitle': 'Health screening',
+        'specialties.fBody': 'Executive checkups, preventive care, structured follow-up planning.',
+        'specialties.cta': 'View specialty directory',
+        'hospitals.title': 'Featured hospitals',
+        'hospitals.lead': 'This demo uses sample cards to show how the first version can present a focused, trustworthy hospital directory.',
+        'hospitals.tag': 'Featured',
+        'hospitals.aTitle': 'Peking Union Medical College Hospital',
+        'hospitals.aMeta': 'Beijing • Tertiary hospital',
+        'hospitals.aBody': 'Known for comprehensive care, strong specialist departments, and complex case management.',
+        'hospitals.bTitle': 'Fudan University Zhongshan Hospital',
+        'hospitals.bMeta': 'Shanghai • Tertiary hospital',
+        'hospitals.bBody': 'Strong in cardiovascular medicine, surgery, and integrated specialty care.',
+        'hospitals.cTitle': 'West China Hospital',
+        'hospitals.cMeta': 'Chengdu • Tertiary hospital',
+        'hospitals.cBody': 'Well known for broad clinical capacity, complex referrals, and multidisciplinary treatment resources.',
+        'hospitals.cta': 'View hospital directory',
+        'advantage.title': 'Why MediBridge',
+        'advantage.lead': 'The website should make it clear that MediBridge is not just listing hospitals, but helping patients make more confident decisions across a fragmented cross border journey.',
+        'advantage.aTitle': 'Independent navigation',
+        'advantage.aBody': 'Help users compare multiple hospitals and departments instead of pushing one institution.',
+        'advantage.bTitle': 'Bilingual clarity',
+        'advantage.bBody': 'Explain hospitals, specialties, and care pathways in a way that international patients and families can actually understand.',
+        'advantage.cTitle': 'Practical coordination',
+        'advantage.cBody': 'Move from information to action with support around records, scheduling, travel, and communication.',
+        'process.title': 'How MediBridge works',
+        'process.lead': 'The experience should reduce uncertainty step by step, from the first inquiry to treatment follow-up.',
+        'process.aTitle': 'Share your needs',
+        'process.aBody': 'Tell us about your condition, treatment goals, urgency, and location preferences.',
+        'process.bTitle': 'Review options',
+        'process.bBody': 'We identify suitable hospitals and departments based on your case and priorities.',
+        'process.cTitle': 'Confirm a plan',
+        'process.cBody': 'Understand likely pathways, records needed, timing expectations, and budget range.',
+        'process.dTitle': 'Prepare for treatment',
+        'process.dBody': 'Coordinate records, appointments, travel planning, and bilingual communication support.',
+        'process.eTitle': 'Receive follow-up support',
+        'process.eBody': 'Stay supported through treatment and post visit coordination where needed.',
+        'process.fTitle': 'Build long term trust',
+        'process.fBody': 'The platform grows stronger as content, hospital coverage, and real patient guidance expand.',
+        'faq.title': 'Frequently asked questions',
+        'faq.aQ': 'Can MediBridge help before I travel to China',
+        'faq.aA': 'Yes. Patients can start by understanding options, reviewing available information, and preparing the next steps before travel.',
+        'faq.bQ': 'Do you work with one hospital only',
+        'faq.bA': 'No. A core value of MediBridge is helping patients compare options across multiple institutions.',
+        'faq.cQ': 'Can you help with records and translation',
+        'faq.cA': 'Yes. The service can include medical record organization, bilingual communication, and interpretation support.',
+        'faq.dQ': 'Is this only for Chinese speaking patients',
+        'faq.dA': 'No. The platform is intended for international patients and families, with bilingual presentation and support.',
+        'cta.title': 'Need help finding the right hospital in China',
+        'cta.lead': 'Start with hospitals and specialties, or contact MediBridge for tailored guidance based on your care needs.',
+        'cta.primary': 'Start a Consultation',
+        'cta.secondary': 'Browse Hospitals',
+        'footer.note': 'Minimal bilingual homepage demo for concept validation.'
+      },
+      zh: {
+        'nav.services': '服务',
+        'nav.specialties': '专科',
+        'nav.hospitals': '医院',
+        'nav.process': '流程',
+        'hero.eyebrow': '为海外患者与家属提供更清晰的赴华就医导航',
+        'hero.title': '连接值得信赖的中国医疗资源',
+        'hero.lead': 'MediBridge 帮助海外患者及家属更清楚地了解中国医院、特色科室与就医路径，并提供从前期咨询到后续跟进的协调支持。',
+        'hero.ctaPrimary': '浏览医院',
+        'hero.ctaSecondary': '发起咨询',
+        'heroCard.title': '更清晰地评估中国就医选择',
+        'heroCard.body': '面向需要可靠信息、专科导向医院导航和实际协调支持的国际患者与家属。',
+        'heroCard.aTitle': '医院',
+        'heroCard.aBody': '按城市和专科整理优质医院',
+        'heroCard.bTitle': '专科',
+        'heroCard.bBody': '按疾病和需求快速进入',
+        'heroCard.cTitle': '匹配',
+        'heroCard.cBody': '根据治疗目标辅助筛选',
+        'heroCard.dTitle': '支持',
+        'heroCard.dBody': '病历、预约、翻译、行程',
+        'trust.1': '信息清晰透明',
+        'trust.2': '精选医院资源',
+        'trust.3': '按专科匹配',
+        'trust.4': '中英双语支持',
+        'services.title': '让赴华就医更清楚，也更可执行',
+        'services.lead': '跨境就医往往信息分散、选项难比、流程不透明。MediBridge 把可信信息与实际协调服务整合在一起，帮助患者更高效地做决定。',
+        'services.aTitle': '医院导航',
+        'services.aBody': '按城市、专科和治疗方向浏览中国优质医院，用患者看得懂的方式展示信息。',
+        'services.bTitle': '专科信息',
+        'services.bBody': '更快了解肿瘤、心血管、神经、骨科、生殖等重点专科资源。',
+        'services.cTitle': '就医匹配',
+        'services.cBody': '根据病情、时效和预算诉求，辅助匹配更合适的医院、科室与医生资源。',
+        'services.dTitle': '全程协调',
+        'services.dBody': '支持病历整理、预约安排、双语沟通、翻译以及行程协调。',
+        'why.title': '为什么越来越多患者考虑来中国就医',
+        'why.lead': '患者通常会同时看重医疗质量、等待时间和整体成本，网站需要把这些维度讲清楚。',
+        'why.aTitle': '优质专科资源',
+        'why.aBody': '中国头部三甲医院和重点专科在多个领域具备吸引力。',
+        'why.bTitle': '部分路径更快',
+        'why.bBody': '与某些海外常见路径相比，部分检查和治疗安排可能更高效。',
+        'why.cTitle': '整体性价比高',
+        'why.cBody': '对不少患者而言，结果与成本的综合价值更有吸引力。',
+        'why.dTitle': '跨院比较空间更大',
+        'why.dBody': '可以按医院、城市和专科做筛选，而不是只看单一机构。',
+        'specialties.title': '按专科浏览',
+        'specialties.lead': '患者通常先从疾病和需求出发，而不是先认医院，这样的路径更直观。',
+        'specialties.aTitle': '肿瘤',
+        'specialties.aBody': '肿瘤治疗、手术、多学科会诊、二次意见。',
+        'specialties.bTitle': '心血管',
+        'specialties.bBody': '心血管检查、介入、手术与康复。',
+        'specialties.cTitle': '神经系统',
+        'specialties.cBody': '卒中、癫痫、运动障碍及相关诊疗资源。',
+        'specialties.dTitle': '骨科',
+        'specialties.dBody': '关节、脊柱、运动损伤和康复。',
+        'specialties.eTitle': '生殖与生育',
+        'specialties.eBody': '生殖医学、辅助生殖路径与专科咨询。',
+        'specialties.fTitle': '体检与预防',
+        'specialties.fBody': '高端体检、预防医疗与后续管理。',
+        'specialties.cta': '查看专科目录',
+        'hospitals.title': '精选医院',
+        'hospitals.lead': '这个 demo 先用示例卡片展示第一版医院目录应该如何呈现得简洁且可信。',
+        'hospitals.tag': '精选',
+        'hospitals.aTitle': '北京协和医院',
+        'hospitals.aMeta': '北京 • 三甲综合医院',
+        'hospitals.aBody': '以综合实力、疑难复杂病例处理能力和重点专科见长。',
+        'hospitals.bTitle': '复旦大学附属中山医院',
+        'hospitals.bMeta': '上海 • 三甲综合医院',
+        'hospitals.bBody': '在心血管、外科及多专科协同方面具有较强优势。',
+        'hospitals.cTitle': '四川大学华西医院',
+        'hospitals.cMeta': '成都 • 三甲综合医院',
+        'hospitals.cBody': '以综合临床能力强、复杂转诊承接能力强而闻名。',
+        'hospitals.cta': '查看医院目录',
+        'advantage.title': '为什么是 MediBridge',
+        'advantage.lead': '网站需要让用户明白，MediBridge 不只是列医院，而是在一段复杂的跨境就医路径里帮患者做出更稳妥的判断。',
+        'advantage.aTitle': '中立导航',
+        'advantage.aBody': '帮助用户跨医院、跨科室比较，而不是只推单一机构。',
+        'advantage.bTitle': '双语清晰表达',
+        'advantage.bBody': '把医院、专科和就医路径讲成国际患者和家属真正看得懂的内容。',
+        'advantage.cTitle': '从信息到执行',
+        'advantage.cBody': '不只告诉你去哪儿，还协助病历、预约、沟通和行程衔接。',
+        'process.title': 'MediBridge 如何帮助你',
+        'process.lead': '整个体验应该一步步降低患者的不确定感，从第一次咨询到就医后的跟进。',
+        'process.aTitle': '提交需求',
+        'process.aBody': '告诉我们病情、治疗目标、紧急程度和城市偏好。',
+        'process.bTitle': '筛选方向',
+        'process.bBody': '根据你的情况梳理适合的医院与科室选项。',
+        'process.cTitle': '确认方案',
+        'process.cBody': '帮助理解可能路径、所需资料、时间安排和预算范围。',
+        'process.dTitle': '就医准备',
+        'process.dBody': '协调病历、预约、翻译沟通和赴华行程安排。',
+        'process.eTitle': '治疗与后续支持',
+        'process.eBody': '在就医前后提供持续沟通与必要的后续支持。',
+        'process.fTitle': '建立长期信任',
+        'process.fBody': '随着内容、医院库和真实案例积累，平台价值会越来越强。',
+        'faq.title': '常见问题',
+        'faq.aQ': '去中国之前可以先咨询吗',
+        'faq.aA': '可以。患者可以先了解方向、整理资料并判断下一步是否适合推进。',
+        'faq.bQ': '你们只对接一家医院吗',
+        'faq.bA': '不是。MediBridge 的核心价值之一就是帮助患者跨医院比较与筛选。',
+        'faq.cQ': '能帮忙整理病历和翻译吗',
+        'faq.cA': '可以，服务可以包含病历整理、双语沟通与翻译支持。',
+        'faq.dQ': '只有中文用户才能使用吗',
+        'faq.dA': '不是。平台面向国际患者和家属，支持双语展示与沟通。',
+        'cta.title': '想更快找到合适的中国医院和科室',
+        'cta.lead': '你可以先浏览医院和专科，也可以直接联系 MediBridge 获取更有针对性的建议。',
+        'cta.primary': '发起咨询',
+        'cta.secondary': '浏览医院',
+        'footer.note': '用于概念验证的极简双语首页 demo。'
+      }
+    };
+
+    const applyLanguage = (lang) => {
+      document.documentElement.lang = lang;
+      document.querySelectorAll('[data-i18n]').forEach((el) => {
+        const key = el.dataset.i18n;
+        if (copy[lang][key]) el.textContent = copy[lang][key];
+      });
+      document.querySelectorAll('[data-lang]').forEach((btn) => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+    };
+
+    document.querySelectorAll('[data-lang]').forEach((btn) => {
+      btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+    });
+
+    applyLanguage('en');
+  </script>
+</body>
+</html>
